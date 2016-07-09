@@ -1,0 +1,13 @@
+body {
+  
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+
+  background-repeat: no-repeat;
+   background-position: 5% 0%; 
+}
+
+a {
+  color: #00B7FF;
+}
+ <!-- background-image: url(../images/binary.png); -->

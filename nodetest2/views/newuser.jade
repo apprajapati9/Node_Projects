@@ -1,0 +1,22 @@
+extends layout
+
+block content
+	|  <br/>
+	|  <br/>	
+	|  <br/>
+	|  <br/>
+	|  <br/>
+	|  <br/>
+	|  <br/>
+	|  <br/>
+	|  <br/>
+	|  <br/>
+	|  <br/>	
+
+	h1= title
+	form#formAddUser(name="adduser",method="post",action="/adduser")
+		input#inputUserName(type="text",placeholder="username",name="username",required)
+		input#inputUserEmail(type="text",placeholder="email",name="useremail",required)
+		button#btnSubmit(type="submit") submit
+		
+	a(href='..') Go Back to Main Page!  

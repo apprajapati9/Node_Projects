@@ -1,0 +1,23 @@
+extends layout
+
+block content
+	|  <br/>
+	|  <br/>	
+	|  <br/>
+	|  <br/>
+	|  <br/>
+	|  <br/>
+	|  <br/>
+	|  <br/>
+	|  <br/>
+	|  <br/>
+	|  <br/>
+	h1.
+		User List
+
+	ul
+		each user, i in userlist
+			li
+				a(href="mailto:#{user.email}")= user.username
+				
+	a(href='..') Go Back to Main Page!  

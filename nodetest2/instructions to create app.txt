@@ -1,0 +1,201 @@
+
+PART 1 : 
+
+1. install nodejs
+2. use  - npm install -g express-generator
+ //it will install the express globally
+
+3. in any directory you are , you can run express because of -g option
+ enter : express yourProjectName
+	- it will create your project with project name
+	
+4.add dependancies we need
+
+in yourProjectName directory of package.json file
+
+"dependencies": {
+    "body-parser": "~1.12.4",
+    "cookie-parser": "~1.3.5",
+    "debug": "~2.2.0",
+    "express": "~4.12.4",
+    "jade": "~1.9.2",
+    "morgan": "~1.5.3",
+    "mongodb": "^1.4.4",
+    "monk": "^1.0.1"
+}
+
+
+5. then in node cmd .. type npm install 
+will install all the dependancies listed in package.json file
+
+6. npm start to start server
+Good to go on  : localhost:3000
+
+PART 2  : 
+
+1. Install MongoDB
+2. To use database , add data directory in your project
+   mkdir data 
+3. mongodb needs data directory
+to set the path : 
+  mongod  --dbpath yourProjectNameDirectory\data\
+  
+  it will create database in your data directory
+  
+4. on cmd , type mongod 
+it will initialize the database
+port : 27017 
+
+5. you can handle database using mongo command
+
+6. lets create some data
+
+use tapUsers //will create/use database 
+
+now tapUsers is database name
+
+7. In mongodb , everything is collection 
+
+db.CreateCollection.insert();
+
+here i am inserting userCollection.
+
+db.userCollection.insert({"username":"Ajay", "email":"ajay@gmail.com"}) \n 
+
+will add one row or data with username / email id + always _id row  (UNIQUE) 
+
+-- list all data
+  db.userCollection.find();
+  -- list all data in JSON format, 
+  db.userCollection.find().pretty()
+  
+8 .
+ newstuff = [{ "username" : "testuser2", "email" : "testuser2@testdomain.com" }, { "username" : "testuser3", "email" : "testuser3@testdomain.com" }]
+db.usercollection.insert(newstuff);
+
+9. 
+
+// add this after required files of app.js
+var mongo = require('mongodb');
+var monk = require('monk');
+var db = monk('localhost:27017/nodetest1');
+
+10. 
+
+now above app.use ( routes )
+add following
+
+// Make our db accessible to our router
+app.use(function(req,res,next){
+    req.db = db;
+    next();
+});
+
+11. Now in routes directory, open file index.js
+
+add following code 
+
+/* GET Userlist page. */
+router.get('/userlist', function(req, res) {
+    var db = req.db;
+    var collection = db.get('usercollection');
+    collection.find({},{},function(e,docs){
+        res.render('userlist', {
+            "userlist" : docs
+        });
+    });
+});
+
+in short, its doing get request , with file userlist in jade to render webpage. 
+it gets database instance 
+gets the collection stored in mongodb
+renders it
+
+12.
+once thats done, means you are getting data from mongodb
+now just need a way to show it on server 
+to do that.. jade comes into play
+
+
+add new file name called, userlist.jade and add following 
+
+extends layout
+
+block content
+    h1.
+        User List
+    ul
+        each user, i in userlist
+            li
+                a(href="mailto:#{user.email}")= user.username
+
+
+13 . restart the server 
+npm restart
+
+go to localhost:3000 
+u should see webpage with listed users added in mongodb
+
+PART 3 : 
+
+1. add new user , it needs a page to get those info.. you can do it by adding
+	in index.js into routes directory
+	
+/* GET New User page. */
+router.get('/newuser', function(req, res) {
+    res.render('newuser', { title: 'Add New User' });
+});
+
+2. now, all you need is newuser file , create it in Views/newuser.jade
+and add following
+
+extends layout
+
+block content
+    h1= title
+    form#formAddUser(name="adduser",method="post",action="/adduser")
+        input#inputUserName(type="text", placeholder="username", name="username")
+        input#inputUserEmail(type="text", placeholder="useremail", name="useremail")
+        button#btnSubmit(type="submit") submit
+
+3. now when you add values to those fields you need some way to add it in your mongodb database
+
+add this to your index.js in your routes directory 
+
+
+/* POST to Add User Service */
+router.post('/adduser', function(req, res) {
+
+    // Set our internal DB variable
+    var db = req.db;
+
+    // Get our form values. These rely on the "name" attributes
+    var userName = req.body.username;
+    var userEmail = req.body.useremail;
+
+    // Set our collection
+    var collection = db.get('usercollection');
+
+    // Submit to the DB
+    collection.insert({
+        "username" : userName,
+        "email" : userEmail
+    }, function (err, doc) {
+        if (err) {
+            // If it failed, return error
+            res.send("There was a problem adding the information to the database.");
+        }
+        else {
+            // And forward to success page
+            res.redirect("userlist");
+        }
+    });
+});
+
+rememer of name comficts.. use exact names all around
+
+4. npm start
+
+up and running.
+
+

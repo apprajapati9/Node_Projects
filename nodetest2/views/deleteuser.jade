@@ -1,0 +1,21 @@
+extends layout
+
+block content
+	|  <br/>
+	|  <br/>	
+	|  <br/>
+	|  <br/>
+	|  <br/>
+	|  <br/>
+	|  <br/>
+	|  <br/>
+	|  <br/>
+	|  <br/>
+	|  <br/>	
+
+	h1= title	
+	form#formDeleteUser(name="userdel",method="post",action="/userdel")
+		input#inputUserName(type="text",placeholder="username",name="username",required)
+		button#btnSubmit(type="submit") submit
+		
+	a(href='..') Go Back to Main Page!  
